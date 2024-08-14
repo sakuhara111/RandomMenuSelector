@@ -1,3 +1,13 @@
+/*
+loadDishes関数:
+
+line.split(',')でCSVの各行をカンマで分割し、1列目をmealType、2列目をdishName、3列目をdishURLとして取得します。
+dishes[mealType].push({ name: dishName, url: dishURL });で、料理名とURLをオブジェクトとしてランチまたはディナーリストに追加します。
+selectRandomDish関数:
+
+selectedDishes[Math.floor(Math.random() * selectedDishes.length)]でランダムに料理を選択し、randomDishに格納します。
+document.getElementById('result').innerHTMLで、選択された料理名をハイパーリンクとして表示します。このハイパーリンクは、クリックすると新しいタブで指定されたURLを開くように設定されています（target="_blank"）。
+*/
 // 料理リストを格納するオブジェクト
 let dishes = {
     'L': [], // ランチ用の料理リスト
@@ -16,11 +26,12 @@ function loadDishes() {
                 // 各行をカンマで分割して、最初の部分をmealType（LまたはD）とする
                 const parts = line.split(',');
                 const mealType = parts[0];
-                // 残りの部分を料理名として取得
-                const dishName = parts.slice(1).join(',').trim();
-                // mealTypeがLまたはDであれば、対応するリストに料理名を追加
+                // 2列目は料理名、3列目はURLとして取得
+                const dishName = parts[1].trim();
+                const dishURL = parts[2].trim();
+                // mealTypeがLまたはDであれば、対応するリストに料理名とURLをオブジェクトとして追加
                 if (mealType === 'L' || mealType === 'D') {
-                    dishes[mealType].push(dishName);
+                    dishes[mealType].push({ name: dishName, url: dishURL });
                 }
             });
         })
@@ -34,8 +45,8 @@ function selectRandomDish(mealType) {
     if (selectedDishes.length > 0) {
         // リストからランダムで1つの料理を選択
         const randomDish = selectedDishes[Math.floor(Math.random() * selectedDishes.length)];
-        // 選択された料理を結果表示部分に表示
-        document.getElementById('result').textContent = randomDish;
+        // 選択された料理をハイパーリンクとして結果表示部分に表示
+        document.getElementById('result').innerHTML = `<a href="${randomDish.url}" target="_blank">${randomDish.name}</a>`;
     } else {
         // 料理リストがロードされていない場合のメッセージ
         document.getElementById('result').textContent = '料理リストがロードされていません。';
